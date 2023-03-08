@@ -1,8 +1,9 @@
-import holder from './cover-letter-variables.js'
-import fs from 'fs';
-import path from 'path';
+const holder = require('./cover-letter-variables.js');
+const fs = require('fs');
 
-const filePath = new URL('cover-letter.txt', import.meta.url);
+const docx = require("docx");
+const { Document, Packer, Paragraph, TextRun } = docx;
+console.log(Document)
 
 const generator = async () => {
     const {companyName,
@@ -28,6 +29,24 @@ const generator = async () => {
     const modified = eval('`' + text + '`')
     console.log(modified)
 
+    const doc = new Document({
+        sections: [{
+            children: [
+                new Paragraph({
+                    text: modified
+                }),
+            ],
+        }],
+    });
+
+    let filename;
+    companyName !== "" ? filename = `cover-letter-${companyName}.docx` : filename = `cover-letter-no-name.docx`
+
+    Packer.toBuffer(doc).then((buffer) => {
+        fs.writeFileSync(filename, buffer);
+    });
+
+    console.log('File created')
 }
 
 generator();

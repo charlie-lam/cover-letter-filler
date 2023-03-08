@@ -19,4 +19,4 @@ const holder = {
     insertField: ""
 }
 
-export default holder;
+module.exports = holder;
